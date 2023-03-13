@@ -4,15 +4,25 @@ template NonEqual(){
     signal input in0;
     signal input in1;
     signal inv;
+    // check that (in0 - in1) is non-zero
     inv <-- 1/ (in0 - in1);
     inv*(in0 - in1) === 1;
 }
 
+// all elements are unique in the array
 template Distinct(n) {
     signal input in[n];
     component nonEqual[n][n];
-    for(var i = 0; i < n; i++){
-        for(var j = 0; j < i; j++){
+    // for(var i = 0; i < n; i++){
+    //     for(var j = 0; j < i; j++){
+    //         nonEqual[i][j] = NonEqual();
+    //         nonEqual[i][j].in0 <== in[i];
+    //         nonEqual[i][j].in1 <== in[j];
+    //     }
+    // }
+
+    for (var i =0; i < n ; i++){
+        for(var j =0; j<i ;j++){
             nonEqual[i][j] = NonEqual();
             nonEqual[i][j].in0 <== in[i];
             nonEqual[i][j].in1 <== in[j];
