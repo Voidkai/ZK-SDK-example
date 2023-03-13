@@ -2,6 +2,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/consensys/gnark-crypto/ecc"
 	"github.com/consensys/gnark/backend/groth16"
 	"github.com/consensys/gnark/frontend"
@@ -65,5 +67,9 @@ func main() {
 		Y: 35,
 	}
 	publicWitness, _ := frontend.NewWitness(pubAssignment, ecc.BN254.ScalarField())
-	err = groth16.Verify(proof, vk, publicWitness)
+	groth16.Verify(proof, vk, publicWitness)
+
+	// 3. Write solidity smart contract into a fileß
+	f, _ := os.Create("verify_solidity.sol")
+	vk.ExportSolidity(f)
 }
