@@ -1,2 +1,9 @@
 \
 bellman/.gitignore
+halo2/.idea/.gitignore
+halo2/.idea/halo2.iml
+halo2/.idea/modules.xml
+halo2/.idea/vcs.xml
+halo2/target/*
+halo2/Cargo.toml
+.DS_Store
