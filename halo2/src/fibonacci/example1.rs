@@ -1,6 +1,7 @@
 use std::marker::PhantomData;
 use halo2_proofs::{arithmetic::FieldExt, circuit::*, plonk::*, poly::Rotation};
 
+// Define FibonacciConfig, which include five columns, col_a+col_b=col_c and constraint selector and instance column.
 #[derive(Debug, Clone)]
 struct FibonacciConfig {
     pub col_a: Column<Advice>,
@@ -10,6 +11,7 @@ struct FibonacciConfig {
     pub instance: Column<Instance>,
 }
 
+// Define FibonacciChip, which is a Fibonacci computation operation set, including a config and _marker. 
 #[derive(Debug, Clone)]
 struct FibonacciChip<F: FieldExt> {
     config: FibonacciConfig,
@@ -31,11 +33,13 @@ impl<F: FieldExt> FibonacciChip<F> {
         let selector = meta.selector();
         let instance = meta.instance_column();
 
+        // enable equality for all columns expect selector column
         meta.enable_equality(col_a);
         meta.enable_equality(col_b);
         meta.enable_equality(col_c);
         meta.enable_equality(instance);
 
+        // Construct a custom gate to constraint a +b =c when s is equal to 1.
         meta.create_gate("add", |meta| {
             //
             // col_a | col_b | col_c | selector
@@ -57,6 +61,11 @@ impl<F: FieldExt> FibonacciChip<F> {
         }
     }
 
+    // Assign the first row from the value in instance column
+    //
+    // col_a |          col_b |         col_c |     selector|   instance
+    //   a<-f[0]      b<-f[1]        c<- a+b       s(enable)       f[0]
+    //                                                             f[1]
     #[allow(clippy::type_complexity)]
     pub fn assign_first_row(
         &self,
@@ -93,6 +102,7 @@ impl<F: FieldExt> FibonacciChip<F> {
         )
     }
 
+    //Assign following rows from the value in first row.
     pub fn assign_row(
         &self,
         mut layouter: impl Layouter<F>,
