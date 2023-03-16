@@ -27,11 +27,12 @@ impl<F: FieldExt> FibonacciChip<F> {
 
     pub fn configure(
         meta: &mut ConstraintSystem<F>,
-        advice: Column<Advice>,
-        instance: Column<Instance>,
+        // advice: Column<Advice>,
+        // instance: Column<Instance>,
     ) -> FibonacciConfig {
         let selector = meta.selector();
-
+        let advice = meta.advice_column();
+        let instance = meta.instance_column();
         meta.enable_equality(advice);
         meta.enable_equality(instance);
 
@@ -125,9 +126,7 @@ impl<F: FieldExt> Circuit<F> for MyCircuit<F> {
     }
 
     fn configure(meta: &mut ConstraintSystem<F>) -> Self::Config {
-        let advice = meta.advice_column();
-        let instance = meta.instance_column();
-        FibonacciChip::configure(meta, advice, instance)
+        FibonacciChip::configure(meta)
     }
 
     fn synthesize(
